@@ -30,8 +30,11 @@ const generateWallet = (
   coinType: string
 ): IWallet => {
   const accountNumber = uuidv4();
-  const path = `m/44'/${coinType}'/0'/${accountNumber}'`;
-  const derivedSeed = derivePath(path, masterSeedPhrase);
+  const path = `m/44'/${coinType}'/0'/${Math.floor(Math.random() * 1000)}'`;
+  console.log("Derivation Path:", path);
+  console.log("Master Seed Phrase:", masterSeedPhrase);
+  console.log("Coin Type:", coinType);
+  const derivedSeed = derivePath(path, masterSeedPhrase.toString());
 
   let privateKey: string;
   let publicKey: string;
@@ -59,7 +62,7 @@ const generateWallet = (
 
   return {
     path,
-    derivedSeed: derivedSeed.key.toHex(),
+    derivedSeed: derivedSeed.key.toString("hex"),
     privateKey,
     publicKey,
     coinType,
