@@ -31,10 +31,10 @@ export default async function WalletLayout({
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
       <SidebarInset>
-        <header className="bg-background border-b sticky top-0 z-20">
+        <header className="bg-background sticky top-0 z-20">
           <div className="flex justify-between md:justify-end items-center gap-3 p-3">
             <SidebarTrigger className="block md:hidden" />
-            <div className="flex gap-3">
+            <div className="flex gap-3 md:hidden">
               {socialHandles.map((item, i) => {
                 return (
                   <Link
