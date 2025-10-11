@@ -149,7 +149,7 @@ const onClearAllWalletData = (): void => {
   clearLocalStorage();
 };
 
-// Get all wallets with optional filtering by coin type
+// Get recovery keys
 const onGetRecoveryPhrase = () => {
   const recoveryKeys = getLocalStorage<IMainRecoveryPhrase>(
     STORAGE_KEYS.MAIN_PHRASE
