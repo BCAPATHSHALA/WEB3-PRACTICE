@@ -14,6 +14,7 @@ import {
 } from "./local.storage";
 import { STORAGE_KEYS } from "./constants";
 
+// ################# SERVER & CLIENT SIDE - CORE WALLET FUNCTIONS #################
 // Generate a new mnemonic phrase and derive the master seed phrase
 const generateMasterSeedPhraseUsingMnemonicPhrase = (): IMainRecoveryPhrase => {
   const mnemonicPhrase = generateMnemonic();
@@ -67,6 +68,7 @@ const generateWallet = (
   };
 };
 
+// ################# CLIENT SIDE - WALLET MANAGEMENT FUNCTIONS #################
 // Add a new wallet (creates master seed if not exist)
 const onAddWallet = (coinType: string): IWallet => {
   let phrase = getLocalStorage<IMainRecoveryPhrase>(STORAGE_KEYS.MAIN_PHRASE);
