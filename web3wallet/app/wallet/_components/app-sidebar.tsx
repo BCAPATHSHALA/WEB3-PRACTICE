@@ -28,6 +28,7 @@ import { FaEthereum } from "react-icons/fa";
 import { MdWallet } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const contentItems = [
   { title: "Home", url: "/wallet", icon: Home },
@@ -190,6 +191,7 @@ export function AppSidebar() {
         <div className="flex justify-end">
           <SidebarTrigger />
         </div>
+        <ThemeToggle />
       </SidebarFooter>
     </Sidebar>
   );
