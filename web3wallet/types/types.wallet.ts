@@ -17,6 +17,6 @@ export type StorageValue =
   | number
   | boolean
   | object
-  | null
   | IMainRecoveryPhrase
-  | IWallet;
+  | IWallet
+  | null;
