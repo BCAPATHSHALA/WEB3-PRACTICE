@@ -20,24 +20,11 @@ import {
   SidebarMenuBadge,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  Bitcoin,
-  Calendar,
-  ChevronUp,
-  Cog,
-  DatabaseBackup,
-  Home,
-  Inbox,
-  Key,
-  Search,
-  Settings,
-  User2,
-} from "lucide-react";
+import { Cog, DatabaseBackup, Home, Key, Settings } from "lucide-react";
 import { SiSolana } from "react-icons/si";
 import { FaEthereum } from "react-icons/fa";
 import { MdWallet } from "react-icons/md";
 import Link from "next/link";
-import { Switch } from "@/components/ui/switch";
 
 const contentItems = [
   {
