@@ -149,6 +149,19 @@ const onClearAllWalletData = (): void => {
   clearLocalStorage();
 };
 
+// Get all wallets with optional filtering by coin type
+const onGetRecoveryPhrase = () => {
+  const recoveryKeys = getLocalStorage<IMainRecoveryPhrase>(
+    STORAGE_KEYS.MAIN_PHRASE
+  );
+  return recoveryKeys
+    ? {
+        mnemonicPhrase: recoveryKeys.mnemonicPhrase,
+        masterSeedPhrase: recoveryKeys.masterSeedPhrase,
+      }
+    : null;
+};
+
 export {
   generateMasterSeedPhraseUsingMnemonicPhrase,
   generateWallet,
@@ -159,4 +172,5 @@ export {
   onGetAllWallets,
   onDeleteAllWallets,
   onClearAllWalletData,
+  onGetRecoveryPhrase,
 };
