@@ -4,7 +4,7 @@ Create and manage **Solana** and **Ethereum** wallets locally. This fun project 
 
 > We divided this project into 3 learning steps for better understanding how each wallet is associated with its own public and private key with extra credentials.
 
-#### [🚀 Web3 Wallet Demo](https://web3walletv1.vercel.app)
+#### [🚀 Web3 Wallet Demo](https://web3walletv1.vercel.app) | [📗 Excalidraw Visual Flow](https://excalidraw.com/#json=UelRXVqXj3_37Bo2c5B3x,Nzf6NJMDH7aH20kJBv374w) | [🙏 Give Your Feedback](linkedin.com/feed/update/urn:li:ugcPost:7383034304064471040)
 
 ![Web3 Wallet Screenshot 1](./public/screenshot-1.png)
 ![Web3 Wallet Screenshot 2](./public/screenshot-2.png)
