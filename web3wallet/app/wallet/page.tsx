@@ -86,38 +86,43 @@ const WalletsPage: React.FC = () => {
 
         <Separator className="my-6" />
 
-        {/* Stats - modern mini cards */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Card className="transition-all hover:shadow-md">
-            <CardHeader>
-              <CardTitle className="text-sm">Total Wallets</CardTitle>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted">
-                <MdWallet className="h-3 w-3" />
-              </span>
+        {/* Stats Section - Responsive Modern Mini Cards */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+          {/* Total Wallets */}
+          <Card className="transition-all hover:shadow-md hover:scale-[1.02] duration-300">
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Wallets
+              </CardTitle>
+              <MdWallet className="h-5 w-5 text-primary" />
             </CardHeader>
-            <CardContent className="text-2xl font-semibold">
+            <CardContent className="text-3xl md:text-5xl font-bold text-center mt-2">
               {counts.total}
             </CardContent>
           </Card>
-          <Card className="transition-all hover:shadow-md">
-            <CardHeader className="flex-row items-center justify-between">
-              <CardTitle className="text-sm">Solana</CardTitle>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted">
-                <SiSolana className="h-3 w-3" />
-              </span>
+
+          {/* Solana */}
+          <Card className="transition-all hover:shadow-md hover:scale-[1.02] duration-300">
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Solana
+              </CardTitle>
+              <SiSolana className="h-5 w-5 text-green-600" />
             </CardHeader>
-            <CardContent className="text-2xl font-semibold">
+            <CardContent className="text-3xl md:text-5xl font-bold text-center mt-2">
               {counts.sol}
             </CardContent>
           </Card>
-          <Card className="transition-all hover:shadow-md">
-            <CardHeader className="flex-row items-center justify-between">
-              <CardTitle className="text-sm">Ethereum</CardTitle>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted">
-                <FaEthereum className="h-3 w-3" />
-              </span>
+
+          {/* Ethereum */}
+          <Card className="transition-all hover:shadow-md hover:scale-[1.02] duration-300">
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Ethereum
+              </CardTitle>
+              <FaEthereum className="h-5 w-5 text-violet-600" />
             </CardHeader>
-            <CardContent className="text-2xl font-semibold">
+            <CardContent className="text-3xl md:text-5xl font-bold text-center mt-2">
               {counts.eth}
             </CardContent>
           </Card>
