@@ -12,7 +12,7 @@ export interface IWallet {
   publicKey: string;             // Public address
   coinType: string;              // "501" for Solana, "60" for Ethereum
   accountNumber: string;         // UUID for unique identification
-  index?: number;                // derivative paths use deterministic index instead of random
+  index: number;                // derivative paths use deterministic index instead of random
 }
 
 export type StorageValue =

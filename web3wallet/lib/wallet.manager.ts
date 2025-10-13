@@ -69,6 +69,7 @@ const generateWallet = (
     publicKey,
     coinType,
     accountNumber,
+    index,
   };
 };
 
@@ -133,7 +134,7 @@ const onUpdateWallet = (accountNumber: string): IWallet | null => {
     getLocalStorage<IMainRecoveryPhrase>(STORAGE_KEYS.MAIN_PHRASE)!
       .masterSeedPhrase,
     wallet.coinType,
-    wallet.index!
+    wallet.index
   );
 
   const updatedWallets = wallets.map((w) =>
