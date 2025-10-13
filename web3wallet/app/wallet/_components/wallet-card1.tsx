@@ -44,7 +44,7 @@ export function WalletCard({
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <coin.Icon className={`${coin.color} h-4 w-4`} aria-hidden />
-            <span className="font-medium">{coin.label} Wallet</span>
+            <span className="font-medium">{coin.label} Wallet {wallet.index+1}</span>
           </CardTitle>
           <Badge variant="secondary" className="text-[10px]">
             {wallet.accountNumber.slice(0, 6)}…{wallet.accountNumber.slice(-4)}
