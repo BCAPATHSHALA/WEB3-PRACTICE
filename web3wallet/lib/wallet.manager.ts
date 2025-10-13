@@ -32,14 +32,16 @@ const generateWallet = (
 ): IWallet => {
   const accountNumber = uuidv4();
   const path = `m/44'/${coinType}'/0'/${index}'`;
-  const derivedSeed = derivePath(path, masterSeedPhrase.toString());
 
   let privateKey: string;
   let publicKey: string;
+  let derivedSeed: Buffer;
 
   if (coinType === "501") {
     // SOLANA COIN
-    const keypair = nacl.sign.keyPair.fromSeed(derivedSeed.key);
+    const derived = derivePath(path, masterSeedPhrase);
+    derivedSeed = derived.key;
+    const keypair = nacl.sign.keyPair.fromSeed(derivedSeed); // Solana wallets use ed25519 derivation
     const secrete = keypair.secretKey;
     const address = keypair.publicKey;
     const secretKeyEncoded = bs58.encode(secrete);
@@ -48,20 +50,21 @@ const generateWallet = (
     publicKey = publicKeyEncoded;
   } else if (coinType === "60") {
     // ETHEREUM COIN
-    const wallet = new ethers.Wallet(
-      Buffer.from(derivedSeed.key).toString("hex")
-    );
+    const wallet = ethers.HDNodeWallet.fromSeed(
+      Buffer.from(masterSeedPhrase, "hex")
+    ).derivePath(path); // Ethereum wallets use secp256k1 derivation
     const secret = wallet.privateKey;
     const address = wallet.address;
     privateKey = secret;
     publicKey = address;
+    derivedSeed = Buffer.from(secret.replace("0x", ""), "hex");
   } else {
     throw new Error("Unsupported coin type");
   }
 
   return {
     path,
-    derivedSeed: derivedSeed.key.toString("hex"),
+    derivedSeed: derivedSeed.toString("hex"),
     privateKey,
     publicKey,
     coinType,
