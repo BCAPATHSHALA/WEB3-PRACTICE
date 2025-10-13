@@ -27,10 +27,11 @@ const generateMasterSeedPhraseUsingMnemonicPhrase = (): IMainRecoveryPhrase => {
 // Generate a new wallet based on the master seed phrase and coin type
 const generateWallet = (
   masterSeedPhrase: string,
-  coinType: string
+  coinType: string,
+  index: number
 ): IWallet => {
   const accountNumber = uuidv4();
-  const path = `m/44'/${coinType}'/0'/${Math.floor(Math.random() * 1000)}'`;
+  const path = `m/44'/${coinType}'/0'/${index}'`;
   const derivedSeed = derivePath(path, masterSeedPhrase.toString());
 
   let privateKey: string;
@@ -81,7 +82,18 @@ const onAddWallet = (coinType: string): IWallet => {
   }
 
   // Step 2: Generate wallet
-  const wallet = generateWallet(phrase.masterSeedPhrase, coinType);
+  const { solanaWallets, ethereumWallets } = onGetAllWallets();
+  let walletLength = 0;
+  if (coinType === "501") {
+    walletLength = solanaWallets.length;
+  } else if (coinType === "60") {
+    walletLength = ethereumWallets.length;
+  }
+  const wallet = generateWallet(
+    phrase.masterSeedPhrase,
+    coinType,
+    walletLength
+  );
 
   // Step 3: Save wallet
   const existingWallets =
@@ -117,7 +129,8 @@ const onUpdateWallet = (accountNumber: string): IWallet | null => {
   const newWallet = generateWallet(
     getLocalStorage<IMainRecoveryPhrase>(STORAGE_KEYS.MAIN_PHRASE)!
       .masterSeedPhrase,
-    wallet.coinType
+    wallet.coinType,
+    wallet.index!
   );
 
   const updatedWallets = wallets.map((w) =>
