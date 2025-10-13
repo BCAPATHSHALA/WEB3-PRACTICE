@@ -14,7 +14,6 @@ import {
 } from "./local.storage";
 import { STORAGE_KEYS } from "./constants";
 
-// ################# SERVER & CLIENT SIDE - CORE WALLET FUNCTIONS #################
 // Generate a new mnemonic phrase and derive the master seed phrase
 const generateMasterSeedPhraseUsingMnemonicPhrase = (): IMainRecoveryPhrase => {
   const mnemonicPhrase = generateMnemonic();
@@ -39,10 +38,11 @@ const generateWallet = (
 
   if (coinType === "501") {
     // SOLANA COIN
-    const secret = nacl.sign.keyPair.fromSeed(derivedSeed.key).secretKey;
-    const address = Keypair.fromSecretKey(secret).publicKey;
-    const secretKeyEncoded = bs58.encode(secret);
-    const publicKeyEncoded = bs58.encode(address.toBytes());
+    const keypair = nacl.sign.keyPair.fromSeed(derivedSeed.key);
+    const secrete = keypair.secretKey;
+    const address = keypair.publicKey;
+    const secretKeyEncoded = bs58.encode(secrete);
+    const publicKeyEncoded = bs58.encode(address);
     privateKey = secretKeyEncoded;
     publicKey = publicKeyEncoded;
   } else if (coinType === "60") {
@@ -68,7 +68,6 @@ const generateWallet = (
   };
 };
 
-// ################# CLIENT SIDE - WALLET MANAGEMENT FUNCTIONS #################
 // Add a new wallet (creates master seed if not exist)
 const onAddWallet = (coinType: string): IWallet => {
   let phrase = getLocalStorage<IMainRecoveryPhrase>(STORAGE_KEYS.MAIN_PHRASE);
