@@ -15,6 +15,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Wallet } from "lucide-react";
+import { UnlockWallet } from "./_components/unlock";
+import { Separator } from "@/components/ui/separator";
 
 export default function WalletDashboard() {
   const { wallets } = useWalletStore();
@@ -154,6 +156,14 @@ function EmptyState({ chainName }: { chainName?: string }) {
           : "Create or import a wallet to get started."}
       </p>
       <AddWalletDialog />
+      <div className="flex items-center w-full max-w-md mx-auto my-6">
+        <Separator className="flex-1" />
+        <span className="mx-4 text-sm font-medium text-muted-foreground select-none">
+          OR
+        </span>
+        <Separator className="flex-1" />
+      </div>
+      <UnlockWallet />
     </div>
   );
 }

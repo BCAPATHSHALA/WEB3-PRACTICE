@@ -40,7 +40,7 @@ export function CreateWalletForm({
   onWalletCreated,
 }: CreateWalletFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { recovery } = useWalletStore();
+  const { recovery, setUnlocked } = useWalletStore();
 
   const form = useForm<PasswordFormData>({
     resolver: zodResolver(passwordSchema),
