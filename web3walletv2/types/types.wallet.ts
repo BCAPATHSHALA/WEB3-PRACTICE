@@ -13,6 +13,18 @@ export interface IWallet {
   coinType: string;              // "501" for Solana, "60" for Ethereum
   accountNumber: string;         // UUID for unique identification
   index: number;                 // derivative paths use deterministic index instead of random
+  walletCount:{                  // For tracking wallets this will helps to recover the wallet using the main recovery phrase
+    total: number;
+    solana: number;
+    ethereum: number;
+  };
+}
+
+// The encrypted vault metadata structure we save in localStorage
+export interface IPasswordMeta {
+  hint?: string | null;    // Optional hint
+  createdAt: string;       // ISO timestamp
+  encryptedVault: string;  // base64 or JSON-stringified payload from `encryptData`
 }
 
 export type StorageValue =
@@ -22,4 +34,5 @@ export type StorageValue =
   | object
   | IMainRecoveryPhrase
   | IWallet
+  | IPasswordMeta
   | null;
