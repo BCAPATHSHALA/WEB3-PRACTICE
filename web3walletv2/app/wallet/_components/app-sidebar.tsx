@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,24 +21,22 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuBadge,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Cog, DatabaseBackup, Home, Key, Settings } from "lucide-react";
+import { Cog, DatabaseBackup, Home, Key, Settings, LogOut } from "lucide-react";
 import { SiSolana } from "react-icons/si";
 import { FaEthereum } from "react-icons/fa";
 import { MdWallet } from "react-icons/md";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useWalletAuth } from "@/hooks/use-wallet-auth";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const contentItems = [
-  { title: "Home", url: "/wallet", icon: Home },
-  { title: "Solana Wallets", url: "/wallet/solana-wallets", icon: SiSolana },
-  {
-    title: "Ethereum Wallets",
-    url: "/wallet/ethereum-wallets",
-    icon: FaEthereum,
-  },
+  { title: "Dashboard", url: "/wallet", icon: Home },
+  { title: "Solana Wallets", url: "/wallet/solana", icon: SiSolana },
+  { title: "Ethereum Wallets", url: "/wallet/ethereum", icon: FaEthereum },
 ];
 
 const settingsItems = [
@@ -48,6 +47,8 @@ const settingsItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useWalletAuth();
   const [isIconOnly, setIsIconOnly] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
@@ -104,11 +105,20 @@ export function AppSidebar() {
     return () => observerRef.current?.disconnect();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Failed to logout");
+    }
+  };
+
   return (
     <Sidebar side="left" variant="floating" collapsible="icon">
       <SidebarHeader ref={headerRef as any} className="group">
         <Link
-          href="/"
+          href="/wallet"
           aria-label="Web3 Wallet"
           className="flex items-center gap-2"
         >
@@ -138,7 +148,7 @@ export function AppSidebar() {
                             : "hover:bg-muted"
                         }`}
                       >
-                        <item.icon />
+                        <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -151,7 +161,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
-                      <Settings />
+                      <Settings className="h-4 w-4" />
                       <span>Settings</span>
                       <SidebarMenuBadge>3</SidebarMenuBadge>
                     </SidebarMenuButton>
@@ -171,7 +181,7 @@ export function AppSidebar() {
                                     : "hover:bg-muted"
                                 }`}
                               >
-                                <item.icon />
+                                <item.icon className="h-4 w-4" />
                                 <span>{item.title}</span>
                               </Link>
                             </SidebarMenuButton>
@@ -188,10 +198,18 @@ export function AppSidebar() {
       </SidebarContent>
       <Separator />
       <SidebarFooter>
-        <div className="flex justify-end">
-          <SidebarTrigger />
+        <div className="flex flex-col gap-2">
+          <ThemeToggle />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+            className="w-full justify-start bg-transparent"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            {!isIconOnly && "Logout"}
+          </Button>
         </div>
-        <ThemeToggle />
       </SidebarFooter>
     </Sidebar>
   );

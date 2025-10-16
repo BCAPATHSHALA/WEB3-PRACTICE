@@ -18,19 +18,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Eye, EyeOff, Copy } from "lucide-react";
+import { Eye, EyeOff, Copy, AlertTriangle } from "lucide-react";
 import { SiSolana } from "react-icons/si";
 import { FaEthereum } from "react-icons/fa";
 import type { IWallet } from "@/types/types.wallet";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 type WalletDetailsDialogProps = {
   open: boolean;
-  wallet: IWallet | null;
+  wallet: IWallet;
   onOpenChange: (open: boolean) => void;
 };
 
-export default function WalletDetailsDialog({
+export function WalletDetailsDialog({
   open,
   wallet,
   onOpenChange,
@@ -38,194 +37,217 @@ export default function WalletDetailsDialog({
   const [maskedPrivate, setMaskedPrivate] = useState(true);
   const [maskedSeed, setMaskedSeed] = useState(true);
 
-  const copy = async (text?: string, label?: string) => {
-    if (!text) return;
+  const copy = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(label ?? "Copied to clipboard");
+      toast.success(label);
     } catch {
-      toast.error("Copy failed", { description: "Unable to copy text" });
+      toast.error("Failed to copy");
     }
   };
 
-  const getCoinBadge = () => {
-    if (!wallet) return null;
-    const isSol = wallet.coinType === "501";
-    return (
-      <div
-        className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
-          isSol
-            ? "bg-green-50 border-green-200 text-green-700"
-            : "bg-violet-50 border-violet-200 text-violet-700"
-        }`}
-      >
-        {isSol ? (
-          <SiSolana className="h-4 w-4" />
-        ) : (
-          <FaEthereum className="h-4 w-4" />
-        )}
-        <span>{isSol ? "Solana" : "Ethereum"}</span>
-      </div>
-    );
+  const isSolana = wallet.coinType === "501";
+  const coinLabel = isSolana ? "Solana" : "Ethereum";
+  const coinIcon = isSolana ? SiSolana : FaEthereum;
+  const CoinIcon = coinIcon;
+
+  const truncateAddress = (address: string, chars = 8) => {
+    return `${address.slice(0, chars)}...${address.slice(-chars)}`;
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl w-full">
+      <DialogContent className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
-              {getCoinBadge()}
+            <DialogTitle className="flex items-center gap-2">
+              <CoinIcon
+                className={`h-5 w-5 ${
+                  isSolana ? "text-[#14F195]" : "text-[#627EEA]"
+                }`}
+              />
+              {coinLabel} Wallet Details
             </DialogTitle>
           </div>
-          <DialogDescription className="text-sm text-muted-foreground">
-            Review full wallet details. Keep your private information secure.
+          <DialogDescription>
+            Review your wallet information. Keep sensitive data secure.
           </DialogDescription>
         </DialogHeader>
 
-        <Separator className="my-3" />
+        <Separator />
 
-        {wallet ? (
-          <Card className="shadow-sm border rounded-xl">
+        <div className="space-y-4">
+          {/* Basic Info */}
+          <Card>
             <CardHeader>
-              <CardTitle className="text-base font-medium">
-                Wallet Information
-              </CardTitle>
+              <CardTitle className="text-sm">Basic Information</CardTitle>
             </CardHeader>
-
-            <CardContent className="space-y-5">
-              {/* Basic Info Section */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Path</p>
-                  <div className="bg-muted/30 rounded-md p-2 font-mono text-xs break-words">
-                    {wallet.path}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">
-                    Account Number
-                  </p>
-                  <div className="bg-muted/30 rounded-md p-2 font-mono text-xs break-words">
-                    {wallet.accountNumber}
-                  </div>
+            <CardContent className="space-y-3">
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">
+                  Derivation Path
+                </label>
+                <div className="mt-1 p-2 bg-muted rounded font-mono text-xs break-all">
+                  {wallet.path}
                 </div>
               </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">
+                  Account Number
+                </label>
+                <div className="mt-1 p-2 bg-muted rounded font-mono text-xs break-all">
+                  {wallet.accountNumber}
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">
+                  Wallet Index
+                </label>
+                <div className="mt-1 p-2 bg-muted rounded font-mono text-xs">
+                  {wallet.index}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-              {/* Accordion for sensitive info */}
+          {/* Keys Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Keys & Seeds</CardTitle>
+            </CardHeader>
+            <CardContent>
               <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="derivedSeed">
-                  <AccordionTrigger className="text-sm font-semibold">
-                    Derived Seed
+                <AccordionItem value="publicKey">
+                  <AccordionTrigger className="text-sm font-medium">
+                    Public Address
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="relative bg-muted/30 rounded-md p-3 font-mono text-xs break-all flex justify-between gap-2">
-                      <p>
-                        {maskedSeed
-                          ? "••••••••••••••••••••••••••"
-                          : wallet.derivedSeed}
-                      </p>
-                      <ButtonGroup>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => setMaskedSeed((s) => !s)}
-                          aria-label="Toggle derived seed visibility"
-                        >
-                          {maskedSeed ? (
-                            <Eye className="h-4 w-4" />
-                          ) : (
-                            <EyeOff className="h-4 w-4" />
-                          )}
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() =>
-                            copy(wallet.derivedSeed, "Derived seed copied")
-                          }
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                      </ButtonGroup>
+                    <div className="space-y-2">
+                      <div className="p-3 bg-muted rounded font-mono text-xs break-all">
+                        {wallet.publicKey}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          copy(wallet.publicKey, "Public address copied")
+                        }
+                        className="w-full"
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy Address
+                      </Button>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="privateKey">
-                  <AccordionTrigger className="text-sm font-semibold">
+                  <AccordionTrigger className="text-sm font-medium">
                     Private Key
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="relative bg-muted/30 rounded-md p-3 font-mono text-xs break-all flex justify-between gap-2">
-                      <p>
+                    <div className="space-y-2">
+                      <div className="p-3 bg-muted rounded font-mono text-xs break-all">
                         {maskedPrivate
                           ? "••••••••••••••••••••••••••"
                           : wallet.privateKey}
-                      </p>
-                      <ButtonGroup>
+                      </div>
+                      <div className="flex gap-2">
                         <Button
-                          size="icon"
+                          size="sm"
                           variant="outline"
-                          onClick={() => setMaskedPrivate((s) => !s)}
-                          aria-label="Toggle private key visibility"
+                          onClick={() => setMaskedPrivate(!maskedPrivate)}
+                          className="flex-1"
                         >
                           {maskedPrivate ? (
-                            <Eye className="h-4 w-4" />
+                            <>
+                              <Eye className="h-4 w-4 mr-2" />
+                              Reveal
+                            </>
                           ) : (
-                            <EyeOff className="h-4 w-4" />
+                            <>
+                              <EyeOff className="h-4 w-4 mr-2" />
+                              Hide
+                            </>
                           )}
                         </Button>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() =>
-                            copy(wallet.privateKey, "Private key copied")
-                          }
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                      </ButtonGroup>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="publicKey">
-                  <AccordionTrigger className="text-sm font-semibold">
-                    Public Key
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="bg-muted/30 rounded-md p-3 font-mono text-xs break-all flex justify-between gap-2">
-                      <p>{wallet.publicKey}</p>
-
-                      <ButtonGroup>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() =>
-                            copy(wallet.publicKey, "Public key copied")
+                            copy(wallet.privateKey, "Private key copied")
                           }
+                          className="flex-1"
                         >
-                          <Copy className="h-4 w-4" />
+                          <Copy className="h-4 w-4 mr-2" />
+                          Copy
                         </Button>
-                      </ButtonGroup>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="derivedSeed">
+                  <AccordionTrigger className="text-sm font-medium">
+                    Derived Seed
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2">
+                      <div className="p-3 bg-muted rounded font-mono text-xs break-all">
+                        {maskedSeed
+                          ? "••••••••••••••••••••••••••"
+                          : wallet.derivedSeed}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setMaskedSeed(!maskedSeed)}
+                          className="flex-1"
+                        >
+                          {maskedSeed ? (
+                            <>
+                              <Eye className="h-4 w-4 mr-2" />
+                              Reveal
+                            </>
+                          ) : (
+                            <>
+                              <EyeOff className="h-4 w-4 mr-2" />
+                              Hide
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            copy(wallet.derivedSeed, "Derived seed copied")
+                          }
+                          className="flex-1"
+                        >
+                          <Copy className="h-4 w-4 mr-2" />
+                          Copy
+                        </Button>
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-
-              {/* Footer Warning */}
-              <p className="text-[11px] text-muted-foreground mt-3 italic">
-                ⚠️ Never share your private key or derived seed. Anyone with
-                access can control your wallet.
-              </p>
             </CardContent>
           </Card>
-        ) : (
-          <div className="text-center text-sm text-muted-foreground py-6">
-            No wallet selected.
+
+          {/* Security Warning */}
+          <div className="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg flex gap-3">
+            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-amber-900 dark:text-amber-100">
+              <p className="font-semibold mb-1">Keep Your Keys Safe</p>
+              <p className="text-xs">
+                Never share your private key or seed with anyone. Anyone with
+                access can control your wallet and steal your funds.
+              </p>
+            </div>
           </div>
-        )}
+        </div>
       </DialogContent>
     </Dialog>
   );
