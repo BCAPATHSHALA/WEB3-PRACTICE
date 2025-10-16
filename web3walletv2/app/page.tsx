@@ -26,24 +26,7 @@ const socialHandles = [
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden">
-      {/* Background Grid with Subtle Gradient */}
-      <div className="absolute inset-0 -z-10 bg-background">
-        <div
-          className="absolute inset-0 opacity-[0.6] dark:opacity-[0.3]"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: "24px 24px",
-          }}
-        ></div>
-
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-transparent to-purple-100 dark:from-zinc-900 dark:via-transparent dark:to-zinc-800 animate-gradient-slow"></div>
-      </div>
-
+    <main className="min-h-screen w-full">
       {/* Hero Section */}
       <section className="relative z-10 py-16 md:py-24">
         <div className="container mx-auto px-4">
@@ -108,27 +91,3 @@ export default function Home() {
     </main>
   );
 }
-
-// src/app/page.tsx
-// "use client";
-
-// import { useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { getLocalStorage } from "@/utils/local.storage";
-// import { STORAGE_KEYS } from "@/utils/constants"; 
-
-// export default function HomePage() {
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     // Decide where to go: if encrypted vault exists, go to unlock, else onboarding
-//     const vault = getLocalStorage(STORAGE_KEYS.PASSWORD_KEY);
-//     if (vault) {
-//       router.replace("/unlock");
-//     } else {
-//       router.replace("/onboarding");
-//     }
-//   }, [router]);
-
-//   return <div className="text-center py-20">Redirecting…</div>;
-// }

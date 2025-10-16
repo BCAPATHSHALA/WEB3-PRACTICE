@@ -40,7 +40,26 @@ export default function RootLayout({
         >
           {process.env.NODE_ENV === "production" && <Analytics />}
           <Toaster />
-          {children}
+          <div className="max-w-full min-h-screen mx-auto relative overflow-hidden">
+            {/* Background Grid with Subtle Gradient */}
+            <div className="absolute inset-0 -z-10 bg-background">
+              <div
+                className="absolute inset-0 opacity-[0.6] dark:opacity-[0.3]"
+                style={{
+                  backgroundImage: `
+              linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px)
+            `,
+                  backgroundSize: "24px 24px",
+                }}
+              ></div>
+
+              {/* Animated gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-transparent to-purple-100 dark:from-zinc-900 dark:via-transparent dark:to-zinc-800 animate-gradient-slow"></div>
+            </div>
+
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
