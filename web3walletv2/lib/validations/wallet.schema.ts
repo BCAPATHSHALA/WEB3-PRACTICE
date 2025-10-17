@@ -105,3 +105,20 @@ export const addWalletSchema = z.object({
 });
 
 export type AddWalletFormData = z.infer<typeof addWalletSchema>;
+
+export const deleteWalletSchema = z.object({
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least one special character"
+    ),
+  confirmation: z.literal(true, {
+    message: "You must confirm wallet deletion",
+  }),
+});
+
+export type DeleteWalletInput = z.infer<typeof deleteWalletSchema>;
