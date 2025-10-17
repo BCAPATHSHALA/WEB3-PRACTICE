@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useWalletStore } from "@/store/use.wallet.store";
 import { getLocalStorage } from "@/utils/local.storage.util";
-import { STORAGE_KEYS } from "@/utils/constants.util";
+import { COOKIE_KEYS, STORAGE_KEYS } from "@/utils/constants.util";
 import type { IPasswordMeta } from "@/types/types.wallet";
 
 export function useWalletAuth() {
@@ -22,14 +22,15 @@ export function useWalletAuth() {
 
   const logout = useCallback(async () => {
     setUnlocked(false);
-    document.cookie = "wallet_unlocked=; path=/; max-age=0";
+    document.cookie = `${COOKIE_KEYS.IS_UNLOCKED}=; path=/; max-age=0`;
+    document.cookie = `${COOKIE_KEYS.HAS_VAULT}=; path=/; max-age=0`;
     router.push("/onboarding/unlock");
   }, [setUnlocked, router]);
 
   const resetWallet = useCallback(async () => {
     setUnlocked(false);
-    document.cookie = "wallet_unlocked=; path=/; max-age=0";
-    document.cookie = "wallet_vault_exists=; path=/; max-age=0";
+    document.cookie = `${COOKIE_KEYS.IS_UNLOCKED}=; path=/; max-age=0`;
+    document.cookie = `${COOKIE_KEYS.HAS_VAULT}=; path=/; max-age=0`;
     router.push("/");
   }, [setUnlocked, router]);
 
