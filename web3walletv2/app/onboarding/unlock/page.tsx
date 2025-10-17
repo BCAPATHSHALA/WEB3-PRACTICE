@@ -11,7 +11,7 @@ import {
 import { unlockWithPassword } from "@/utils/wallet.flows.util";
 import { useWalletStore } from "@/store/use.wallet.store";
 import { getLocalStorage } from "@/utils/local.storage.util";
-import { STORAGE_KEYS } from "@/utils/constants.util";
+import { COOKIE_KEYS, STORAGE_KEYS } from "@/utils/constants.util";
 import type { IPasswordMeta } from "@/types/types.wallet";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -51,7 +51,9 @@ export default function UnlockPage() {
       if (result.success) {
         toast.success(result.message);
         setUnlocked(true);
-        document.cookie = "wallet_unlocked=true; path=/; max-age=2592000";
+        // Set cookie to mark wallet as unlocked for session persistence and vault existence check in middleware (30 days)
+        document.cookie = `${COOKIE_KEYS.IS_UNLOCKED}=true; path=/; max-age=2592000`;
+        document.cookie = `${COOKIE_KEYS.HAS_VAULT}=true; path=/; max-age=2592000`;
         router.push("/wallet");
       }
     } catch (error: any) {

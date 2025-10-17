@@ -25,6 +25,7 @@ import {
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { COOKIE_KEYS } from "@/utils/constants.util";
 
 export default function ImportWalletPage() {
   const router = useRouter();
@@ -50,8 +51,9 @@ export default function ImportWalletPage() {
       );
       if (result.success) {
         toast.success(result.message);
-        document.cookie = "wallet_unlocked=true; path=/; max-age=2592000";
-        document.cookie = "wallet_vault_exists=true; path=/; max-age=2592000";
+        // Set cookie to mark wallet as unlocked for session persistence and vault existence check in middleware (30 days)
+        document.cookie = `${COOKIE_KEYS.IS_UNLOCKED}=true; path=/; max-age=2592000`;
+        document.cookie = `${COOKIE_KEYS.HAS_VAULT}=true; path=/; max-age=2592000`;
         router.push("/wallet");
       }
     } catch (error: any) {

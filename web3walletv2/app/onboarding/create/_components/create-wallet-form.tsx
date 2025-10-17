@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { COOKIE_KEYS } from "@/utils/constants.util";
 
 interface CreateWalletFormProps {
   onRecoveryGenerated?: (phrase: string) => void;
@@ -40,7 +41,6 @@ export function CreateWalletForm({
   onWalletCreated,
 }: CreateWalletFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { recovery, setUnlocked } = useWalletStore();
 
   const form = useForm<PasswordFormData>({
     resolver: zodResolver(passwordSchema),
@@ -69,9 +69,9 @@ export function CreateWalletForm({
       const result = await finalizeCreateWithPassword(data.password, data.hint);
       if (result.success) {
         toast.success(result.message);
-        // Set cookie to mark wallet as unlocked
-        document.cookie = "wallet_unlocked=true; path=/; max-age=2592000";
-        document.cookie = "wallet_vault_exists=true; path=/; max-age=2592000";
+        // Set cookie to mark wallet as unlocked for session persistence and vault existence check in middleware (30 days)
+        document.cookie = `${COOKIE_KEYS.IS_UNLOCKED}=true; path=/; max-age=2592000`;
+        document.cookie = `${COOKIE_KEYS.HAS_VAULT}=true; path=/; max-age=2592000`;
         onWalletCreated?.();
       }
     } catch (error: any) {

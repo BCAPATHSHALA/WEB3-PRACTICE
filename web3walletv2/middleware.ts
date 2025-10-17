@@ -1,11 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { COOKIE_KEYS } from "./utils/constants.util";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if wallet is unlocked (session-based check)
-  const isUnlocked = request.cookies.get("wallet_unlocked")?.value === "true";
-  const hasVault = request.cookies.get("wallet_vault_exists")?.value === "true";
+  const isUnlocked = request.cookies.get(COOKIE_KEYS.HAS_VAULT)?.value === "true";
+  const hasVault = request.cookies.get(COOKIE_KEYS.HAS_VAULT)?.value === "true";
 
   // Public routes that don't require authentication
   const publicRoutes = ["/", "/onboarding"];
